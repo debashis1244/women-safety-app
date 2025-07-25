@@ -25,25 +25,25 @@
             background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
             color: var(--text-dark);
             text-align: center;
-            padding: 0; /* Remove default padding */
-            margin: 0;  /* Remove default margin */
-            min-height: 100vh; /* Ensure full viewport height */
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Center content vertically */
-            align-items: center; /* Center content horizontally */
-            overflow: hidden; /* Hide potential scrollbar from subtle animations */
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
         .container {
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white container */
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 40px 30px;
             border-radius: 15px;
             box-shadow: 0 10px 30px var(--shadow-medium);
             max-width: 500px;
             width: 90%;
             animation: fadeIn 1s ease-out;
-            box-sizing: border-box; /* Include padding in width */
+            box-sizing: border-box;
         }
 
         @keyframes fadeIn {
@@ -51,30 +51,39 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Logo Styling */
+        /* Logo Styling - UPDATED */
         .logo {
-            width: 100px; /* Adjust size as needed */
-            height: auto; /* Maintain aspect ratio */
-            margin-bottom: 20px; /* Space below the logo */
-            animation: logoScaleIn 1s ease-out;
+            width: 140px; /* Made bigger (from 100px) */
+            height: auto;
+            margin-bottom: 20px;
+            animation: logoPulse 2s infinite ease-in-out; /* Added new animation */
         }
 
-        @keyframes logoScaleIn {
+        /* New Logo Pulse Animation */
+        @keyframes logoPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); } /* Slightly larger */
+            100% { transform: scale(1); }
+        }
+
+        /* Original logoScaleIn, still used for initial appearance if you want */
+        /* You can remove if logoPulse is enough for initial as well */
+        /* @keyframes logoScaleIn {
             from { transform: scale(0.6); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
-        }
+        } */
 
 
         .brand-name {
             font-family: 'Montserrat', sans-serif;
-            font-size: 5.5vw; /* Responsive font size */
+            font-size: 5.5vw;
             font-weight: 800;
-            color: var(--accent-red); /* Use the alert color for impact */
+            color: var(--accent-red);
             letter-spacing: 2px;
             margin-bottom: 10px;
             text-shadow: 2px 2px 5px var(--shadow-light);
             animation: scaleIn 1.2s ease-out;
-            line-height: 1; /* Adjust line height for big text */
+            line-height: 1;
         }
 
         @keyframes scaleIn {
@@ -83,9 +92,9 @@
         }
 
         .tagline {
-            font-size: 1.2em; /* Responsive font size */
+            font-size: 1.2em;
             color: var(--text-dark);
-            margin-bottom: 20px; /* Reduced margin to make space for theme image */
+            margin-bottom: 20px;
             font-weight: 400;
             opacity: 0.9;
             animation: slideIn 1.4s ease-out;
@@ -96,12 +105,11 @@
             to { opacity: 0.9; transform: translateY(0); }
         }
 
-        /* New: Thematic Image Styling */
         .theme-image {
-            max-width: 80%; /* Adjust size relative to container */
+            max-width: 80%;
             height: auto;
             border-radius: 10px;
-            margin-bottom: 30px; /* Space between image and buttons */
+            margin-bottom: 30px;
             box-shadow: 0 5px 15px var(--shadow-medium);
             animation: imageFadeIn 1.6s ease-out;
         }
@@ -113,19 +121,19 @@
 
         .button-group {
             display: flex;
-            flex-direction: column; /* Stack buttons vertically on small screens */
-            gap: 15px; /* Space between buttons */
+            flex-direction: column;
+            gap: 15px;
             margin-top: 20px;
         }
 
         .button {
-            display: block; /* Make buttons take full width of container */
+            display: block;
             padding: 16px 35px;
             background-color: var(--accent-red);
             color: var(--text-light);
             text-decoration: none;
             font-size: 1.1em;
-            border-radius: 50px; /* More rounded, modern look */
+            border-radius: 50px;
             transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 600;
             box-shadow: 0 4px 15px var(--shadow-medium);
@@ -133,24 +141,24 @@
 
         .button:hover {
             background-color: var(--accent-red-hover);
-            transform: translateY(-3px); /* Subtle lift effect */
+            transform: translateY(-3px);
             box-shadow: 0 6px 20px var(--shadow-dark);
         }
 
         /* Responsive adjustments */
         @media (min-width: 600px) {
             .brand-name {
-                font-size: 60px; /* Fixed size on larger screens */
+                font-size: 60px;
             }
             .tagline {
                 font-size: 1.3em;
             }
             .button-group {
-                flex-direction: row; /* Buttons side-by-side on larger screens */
+                flex-direction: row;
                 justify-content: center;
             }
             .button {
-                min-width: 200px; /* Ensure buttons are not too small */
+                min-width: 200px;
             }
         }
     </style>
@@ -165,12 +173,10 @@
 </head>
 <body>
     <div class="container">
-        <img src="logo kavachlink.PNG" alt="logo kavachlink.PNG" class="logo">
+        <img src="logo kavachlink.PNG" alt="KavachLink Logo" class="logo">
 
         <div class="brand-name">KAVACHLINK</div>
         <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
-
-        <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
 
         <div class="button-group">
             <a href="sender.html" class="button">🔴 Emergency Sender</a>
