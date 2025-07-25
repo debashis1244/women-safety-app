@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Emergency Sender</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #ff9a9e, #fad0c4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 60px;
+    }
+    h1 { font-size: 32px; margin-bottom: 20px; }
+    #status { font-size: 18px; margin-top: 10px; }
+    button {
+      background-color: #ff3b3f;
+      color: white;
+      padding: 20px 50px;
+      border: none;
+      border-radius: 50px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    video {
+      margin-top: 30px;
+      width: 340px;
+      height: 240px;
+      border-radius: 14px;
+      border: 3px solid #333;
+      background-color: black;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <h1>🚨 Emergency Help Request 🚨</h1>
+  <button onclick="startEmergency()">Tap for Help</button>
+  <p id="status">Click the button to start live video...</p>
+  <video id="video" autoplay muted></video>
+
+  <script>
+    const { createClient } = supabase;
+    const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+    const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const video = document.getElementById("video");
+    const sessionId = crypto.randomUUID();
+    let pc;
+
+    function updateStatus(msg) {
+      document.getElementById("status").innerText = msg;
+    }
+
+    async function startEmergency() {
+      updateStatus("📡 Accessing camera...");
+      try {
+        // const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+        video: {
+        width: { ideal: 320 },  // Reduce resolution to 640x360
+        height: { ideal: 240 },
+        frameRate: { ideal: 15, max: 20 }  // Lower frame rate
+      },
+      audio: true
+    });
+        video.srcObject = stream;
+        await setupWebRTC(stream);
+        await sendLocation();
+      } catch (err) {
+        console.error("Media error:", err);
+        updateStatus("❌ Could not access camera or mic.");
+      }
+    }
+
+    async function setupWebRTC(stream) {
+      pc = new RTCPeerConnection({
+        iceServers: [
+          {
+            urls: "turn:relay.metered.ca:443?transport=tcp",
+            username: "openai",
+            credential: "openai"
+          }
+        ]
+      });
+
+      // Log ICE state and candidates
+      pc.oniceconnectionstatechange = () => {
+        console.log("ICE State:", pc.iceConnectionState);
+        updateStatus("ICE State: " + pc.iceConnectionState);
+      };
+
+      pc.onicecandidate = async (event) => {
+        if (event.candidate) {
+          console.log("🌍 ICE Candidate:", event.candidate.candidate);
+          updateStatus("Using: " + event.candidate.candidate);
+          await client.from("signals").insert([
+            {
+              session_id: sessionId,
+              type: "offer-candidate",
+              sdp: JSON.stringify(event.candidate)
+            }
+          ]);
+        }
+      };
+
+      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+      const offer = await pc.createOffer();
+      // offer.sdp = offer.sdp.replace(/a=sendrecv/g, 'a=sendrecv\r\na=fmtp:96 x-google-min-bitrate=100; x-google-max-bitrate=300');
+      await pc.setLocalDescription(offer);
+
+      await client.from("signals").insert([
+        { session_id: sessionId, type: "offer", sdp: JSON.stringify(offer) }
+      ]);
+
+      updateStatus(`📨 Offer sent (Session ID: ${sessionId})`);
+      console.log("Session ID:", sessionId);
+
+      client.channel('realtime:public:signals')
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'signals',
+          filter: `session_id=eq.${sessionId}`
+        }, async payload => {
+          const signal = payload.new;
+          if (signal.type === "answer") {
+            const answer = JSON.parse(signal.sdp);
+            await pc.setRemoteDescription(new RTCSessionDescription(answer));
+            updateStatus("🎥 Viewer connected. Streaming live...");
+          }
+
+          if (signal.type === "answer-candidate") {
+            const candidate = JSON.parse(signal.sdp);
+            await pc.addIceCandidate(new RTCIceCandidate(candidate));
+          }
+        }).subscribe();
+    }
+
+    async function sendLocation() {
+      if (!navigator.geolocation) return;
+      navigator.geolocation.watchPosition(async ({ coords }) => {
+        await client.from("locations").upsert([{
+          session_id: sessionId,
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          timestamp: new Date().toISOString()
+        }], { onConflict: ['session_id'] });
+      });
+    }
+  </script>
+</body>
+</html>

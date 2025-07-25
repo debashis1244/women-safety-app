@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Volunteer Signup</title>
+
+<!-- Supabase JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+</head>
+<body style="font-family: Arial; padding: 40px; background-color: #f0f8ff;">
+  <h2>🧑‍🤝‍🧑 Volunteer Registration</h2>
+  <form id="signupForm">
+    <label>Name:</label><br>
+    <input type="text" id="name" required><br><br>
+
+    <label>Email:</label><br>
+    <input type="email" id="email" required><br><br>
+
+    <label>Phone:</label><br>
+    <input type="text" id="phone" required><br><br>
+
+    <label>College Name:</label><br>
+    <input type="text" id="college" required><br><br>
+
+    <button type="submit">Register as Volunteer</button>
+  </form>
+
+  <!-- Supabase SDKs -->
+  <script src="https://www.gstatic.com/supabasejs/9.6.10/supabase-app-compat.js"></script> -->
+  <script src="https://www.gstatic.com/supabasejs/9.6.10/supabase-firestore-compat.js"></script> -->
+  <script src="https://www.gstatic.com/supabasejs/9.6.10/supabase-messaging-compat.js"></script> -->
+
+  <script>
+    // Supabase Config
+    const supabaseConfig = {
+      apiKey: "AIzaSyBpjFp4K85W7-_dCkeCHpljH6ugd7e7NNk",
+      authDomain: "womensafetyapp-1afdd.supabaseapp.com",
+      projectId: "womensafetyapp-1afdd",
+      storageBucket: "womensafetyapp-1afdd.appspot.com",
+      messagingSenderId: "637704780656",
+      appId: "1:637704780656:web:931791fb0e8d48c2ab2db5"
+    };
+
+    supabase.initializeApp(supabaseConfig);
+    const db = supabase.firestore();
+    const messaging = supabase.messaging();
+
+    // Get FCM token
+    async function getFCMToken() {
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+          alert("Notification permission denied.");
+          return null;
+        }
+
+        const token = await messaging.getToken({
+          vapidKey: 'BG8RBbp5CiZEnOuCVkm-rGotyZPcViqbHM40qwkTazAJXcWu_9qF4-8QCOVFcjTer434t03pWXIsibdsyL1zNwg'
+        });
+
+        return token;
+      } catch (err) {
+        console.error("FCM error:", err);
+        return null;
+      }
+    }
+
+    // Form submission
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const college = document.getElementById('college').value;
+
+      const fcmToken = await getFCMToken();
+      if (!fcmToken) return;
+
+      if (!navigator.geolocation) {
+        alert("Location not supported.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        try {
+          await db.collection("volunteers").add({
+            name,
+            email,
+            phone,
+            college,
+            fcmToken,
+            location: {
+              latitude,
+              longitude
+            },
+            available: true
+          });
+
+          alert("✅ Volunteer registered successfully!");
+          document.getElementById("signupForm").reset();
+        } catch (err) {
+          console.error("Error saving data:", err);
+          alert("❌ Failed to save volunteer data.");
+        }
+      }, (err) => {
+        alert("❌ Location access denied.");
+      });
+    });
+  </script> -->
+</body>
+</html>
+

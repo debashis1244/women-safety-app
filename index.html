@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Women's Safety App</title>
+  <link rel="icon" href="favicon.ico" />
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #ffe0e0, #fff3f3);
+      color: #333;
+      text-align: center;
+      padding-top: 80px;
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+
+    a {
+      display: inline-block;
+      margin: 12px;
+      padding: 14px 30px;
+      background-color: #ff3b3f;
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 30px;
+      transition: background-color 0.3s ease;
+    }
+
+    a:hover {
+      background-color: #e32b2f;
+    }
+  </style>
+
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // You can use supabase client here if needed
+  </script>
+</head>
+<body>
+  <h1>🚨 Women's Safety App</h1>
+  <a href="sender.html">🔴 Emergency Sender</a>
+  <a href="viewer.html">👁️ Live Viewer</a>
+  <a href="location.html">📍 Victim Location</a>
+  <a href="volunteer.html" class="button">🆘 Volunteer Portal</a>
+</body>
+</html>

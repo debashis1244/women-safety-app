@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Live Emergency Viewer</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #a1c4fd, #c2e9fb);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+    h1 { font-size: 28px; margin-bottom: 10px; }
+    #status { font-size: 16px; margin: 20px 0; }
+    video {
+      width: 360px;
+      height: 240px;
+      border-radius: 12px;
+      border: 3px solid #444;
+      background-color: black;
+    }
+    #map {
+      height: 300px;
+      width: 360px;
+      margin-top: 30px;
+      border: 2px solid #555;
+      border-radius: 10px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+    }
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <h1>📡 Live Emergency Viewer</h1>
+  <input type="text" id="sessionInput" placeholder="Enter Session ID" />
+  <button onclick="startViewing()">Start Viewing</button>
+  <div id="status">Waiting for stream...</div>
+  <video id="video" autoplay playsinline controls muted></video>
+  <div id="map"></div>
+
+  <script>
+    const { createClient } = supabase;
+    const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+    const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const video = document.getElementById("video");
+    let pc;
+
+    function updateStatus(msg) {
+      document.getElementById("status").innerText = msg;
+    }
+
+    async function startViewing() {
+      const sessionId = document.getElementById("sessionInput").value.trim();
+      if (!sessionId) return alert("Please enter a session ID.");
+
+      updateStatus("🔍 Looking for offer...");
+
+      const { data: offerRow } = await client
+        .from("signals")
+        .select("*")
+        .eq("session_id", sessionId)
+        .eq("type", "offer")
+        .order("id", { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!offerRow) {
+        updateStatus("❌ No offer found. Make sure the sender has started.");
+        return;
+      }
+
+      pc = new RTCPeerConnection({
+        iceServers: [
+          {
+            urls: "turn:relay.metered.ca:443?transport=tcp",
+            username: "openai",
+            credential: "openai"
+          }
+        ]
+      });
+
+      pc.oniceconnectionstatechange = () => {
+        console.log("ICE State:", pc.iceConnectionState);
+        updateStatus("ICE State: " + pc.iceConnectionState);
+      };
+
+      pc.ontrack = (event) => {
+        video.srcObject = event.streams[0];
+        updateStatus("✅ Stream received.");
+      };
+
+      pc.onicecandidate = async (event) => {
+        if (event.candidate) {
+          console.log("🌍 ICE Candidate:", event.candidate.candidate);
+          updateStatus("Using: " + event.candidate.candidate);
+          await client.from("signals").insert([
+            {
+              session_id: sessionId,
+              type: "answer-candidate",
+              sdp: JSON.stringify(event.candidate)
+            }
+          ]);
+        }
+      };
+
+      const offer = JSON.parse(offerRow.sdp);
+      await pc.setRemoteDescription(new RTCSessionDescription(offer));
+
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+
+      await client.from("signals").insert([
+        {
+          session_id: sessionId,
+          type: "answer",
+          sdp: JSON.stringify(answer)
+        }
+      ]);
+
+      client.channel('realtime:public:signals')
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'signals',
+          filter: `session_id=eq.${sessionId}`
+        }, async payload => {
+          const signal = payload.new;
+          if (signal.type === "offer-candidate") {
+            const candidate = JSON.parse(signal.sdp);
+            await pc.addIceCandidate(new RTCIceCandidate(candidate));
+          }
+        }).subscribe();
+
+      trackLocation(sessionId);
+    }
+
+    function trackLocation(sessionId) {
+      const map = L.map('map').setView([20.5937, 78.9629], 4);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      let marker;
+
+      async function fetchLocation() {
+        const { data: loc } = await client
+          .from("locations")
+          .select("*")
+          .eq("session_id", sessionId)
+          .order("timestamp", { ascending: false })
+          .limit(1)
+          .single();
+
+        if (loc) {
+          const { latitude, longitude } = loc;
+          if (marker) {
+            marker.setLatLng([latitude, longitude]);
+          } else {
+            marker = L.marker([latitude, longitude]).addTo(map)
+              .bindPopup("Victim's Location").openPopup();
+          }
+          map.setView([latitude, longitude], 15);
+        }
+      }
+
+      setInterval(fetchLocation, 5000);
+    }
+  </script>
+</body>
+</html>
+ 

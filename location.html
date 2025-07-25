@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Emergency Viewer</title>
+    <style>
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+      #info {
+        margin: 10px 0;
+        font-family: Arial, sans-serif;
+        color: #444;
+      }
+    </style>
+  
+<!-- Supabase JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+</head>
+  <body>
+    <h1>Live Emergency Map</h1>
+    <div id="info">Waiting for location update...</div>
+    <div id="map"></div>
+
+    <!-- Supabase SDK -->
+    <script src="https://www.gstatic.com/supabasejs/9.6.10/supabase-app-compat.js"></script> -->
+    <script src="https://www.gstatic.com/supabasejs/9.6.10/supabase-firestore-compat.js"></script> -->
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCogp938yQVlLa6TaopOQ1UTG8XczIK5k0"></script> -->
+
+    <script>
+      const supabaseConfig = {
+        apiKey: "AIzaSyBpjFp4K85W7-_dCkeCHpljH6ugd7e7NNk",
+        authDomain: "womensafetyapp-1afdd.supabaseapp.com",
+        projectId: "womensafetyapp-1afdd",
+        storageBucket: "womensafetyapp-1afdd.appspot.com",
+        messagingSenderId: "637704780656",
+        appId: "1:637704780656:web:931791fb0e8d48c2ab2db5"
+      };
+
+      supabase.initializeApp(supabaseConfig);
+      const db = supabase.firestore();
+
+      let map;
+      let marker;
+      let accuracyCircle;
+
+      function initializeMap(lat, lng) {
+        const location = { lat, lng };
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 17,
+          center: location,
+        });
+
+        marker = new google.maps.Marker({
+          position: location,
+          map: map,
+          label: "📍",
+        });
+
+        accuracyCircle = new google.maps.Circle({
+          strokeColor: "#4285F4",
+          strokeOpacity: 0.8,
+          strokeWeight: 2,
+          fillColor: "#4285F4",
+          fillOpacity: 0.2,
+          map,
+          center: location,
+          radius: 20, // default
+        });
+      }
+
+      function updateMap(lat, lng, accuracy, timestamp) {
+        const location = { lat, lng };
+        marker.setPosition(location);
+        map.setCenter(location);
+        accuracyCircle.setCenter(location);
+        accuracyCircle.setRadius(accuracy);
+
+        document.getElementById("info").innerText =
+          `📡 Location: ${lat.toFixed(5)}, ${lng.toFixed(5)} | Accuracy: ±${Math.round(accuracy)}m | Time: ${new Date(timestamp).toLocaleTimeString()}`;
+      }
+
+      function loadLiveLocation() {
+        db.collection("emergencies")
+          .doc("live")
+          .onSnapshot((doc) => {
+            if (doc.exists) {
+              const data = doc.data();
+              const { latitude, longitude, accuracy, timestamp } = data;
+
+              if (!map) {
+                initializeMap(latitude, longitude);
+              }
+
+              if (accuracy < 100) {
+                updateMap(latitude, longitude, accuracy, timestamp);
+              } else {
+                document.getElementById("info").innerText =
+                  `⚠️ Location too imprecise (±${Math.round(accuracy)}m). Waiting for better accuracy...`;
+              }
+            } else {
+              document.getElementById("info").innerText = "No emergency location data found.";
+            }
+          });
+      }
+
+      loadLiveLocation();
+    </script> -->
+  </body>
+</html>
+

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Volunteer Emergency Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
+
+<!-- Supabase JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+<script>
+  const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+</head>
+<body>
+  <h2 style="text-align:center; padding: 10px;">🗺️ Real-Time Emergency Dashboard</h2>
+  <div id="map"></div>
+
+  <!-- Supabase SDKs -->
+  <script src="https://www.gstatic.com/supabasejs/9.6.10/supabase-app-compat.js"></script> -->
+  <script src="https://www.gstatic.com/supabasejs/9.6.10/supabase-firestore-compat.js"></script> -->
+
+  <!-- Google Maps JS API (replace YOUR_API_KEY with your real key) -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCogp938yQVlLa6TaopOQ1UTG8XczIK5k0"></script> -->
+
+  <script>
+    // Initialize Supabase
+    const supabaseConfig = {
+      apiKey: "AIzaSyBpjFp4K85W7-_dCkeCHpljH6ugd7e7NNk",
+      authDomain: "womensafetyapp-1afdd.supabaseapp.com",
+      projectId: "womensafetyapp-1afdd",
+      storageBucket: "womensafetyapp-1afdd.appspot.com",
+      messagingSenderId: "637704780656",
+      appId: "1:637704780656:web:931791fb0e8d48c2ab2db5"
+    };
+
+    supabase.initializeApp(supabaseConfig);
+    const db = supabase.firestore();
+
+    let map;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 20.5937, lng: 78.9629 }, // Center of India
+        zoom: 5,
+      });
+
+      // Live listen to emergency collection
+      db.collection("emergencies").onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === "added") {
+            const data = change.doc.data();
+            const marker = new google.maps.Marker({
+              position: {
+                lat: data.latitude,
+                lng: data.longitude
+              },
+              map,
+              title: "🚨 Emergency",
+              icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png"
+            });
+
+            const infoWindow = new google.maps.InfoWindow({
+              content: `<strong>Emergency</strong><br>Time: ${new Date(data.timestamp).toLocaleString()}`
+            });
+
+            marker.addListener("click", () => {
+              infoWindow.open(map, marker);
+            });
+          }
+        });
+      });
+    }
+
+    window.onload = initMap;
+  </script> -->
+</body>
+</html>

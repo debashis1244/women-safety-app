@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Volunteer Check-In</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input, button, select { /* Added select */
+      display: block;
+      margin: 10px 0;
+      width: 100%;
+      padding: 10px;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Volunteer Check-In</h2>
+  <input type="text" id="volunteerId" placeholder="Enter Volunteer ID">
+  <input type="text" id="college" placeholder="Enter College Name">
+
+  <select id="availabilityStatus">
+    <option value="true">Available</option>
+    <option value="false">Unavailable</option>
+  </select>
+
+  <button onclick="startLocationUpdates()">Start Updating Location</button>
+  <button onclick="stopLocationUpdates()">Stop Updating Location</button>
+
+  <div id="status"></div>
+
+  <script>
+    const supabaseUrl = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    let watchId; // To store the watchPosition ID
+    const updateInterval = 30000; // Update location every 30 seconds
+
+    async function updateVolunteerStatus(isAvailable) {
+      const volunteerId = document.getElementById("volunteerId").value.trim();
+      if (!volunteerId) {
+        alert("Please enter volunteer ID first.");
+        return false;
+      }
+      const { error } = await supabase
+        .from('Volunteer')
+        .update({ is_available: isAvailable })
+        .eq('id', volunteerId);
+
+      if (error) {
+        console.error("Error updating availability:", error);
+        document.getElementById("status").innerText = `Error updating availability: ${error.message}`;
+        return false;
+      }
+      return true;
+    }
+
+    async function sendLocationUpdate(position) {
+      const volunteerId = document.getElementById("volunteerId").value.trim();
+      const college = document.getElementById("college").value.trim();
+      const isAvailable = document.getElementById("availabilityStatus").value === 'true';
+
+      if (!volunteerId || !college) {
+        document.getElementById("status").innerText = "Please enter volunteer ID and college.";
+        return;
+      }
+
+      const { latitude, longitude } = position.coords;
+
+      const { data, error } = await supabase
+        .from('Volunteer')
+        .upsert([
+          {
+            id: volunteerId,
+            college: college,
+            latitude: latitude,
+            longitude: longitude,
+            updated_at: new Date().toISOString(),
+            is_available: isAvailable // Include availability
+          }
+        ], { onConflict: ['id'] });
+
+      if (error) {
+        console.error("Error updating location:", error);
+        document.getElementById("status").innerText = `Failed to update location: ${error.message}`;
+      } else {
+        document.getElementById("status").innerText = `Location updated successfully at ${new Date().toLocaleTimeString()} (Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)})`;
+      }
+    }
+
+    function startLocationUpdates() {
+      const volunteerId = document.getElementById("volunteerId").value.trim();
+      const college = document.getElementById("college").value.trim();
+      if (!volunteerId || !college) {
+        alert("Please enter volunteer ID and college to start updates.");
+        return;
+      }
+
+      if (watchId) {
+        document.getElementById("status").innerText = "Location updates already active.";
+        return;
+      }
+
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser");
+        return;
+      }
+
+      // Set initial availability to true
+      document.getElementById("availabilityStatus").value = 'true';
+      updateVolunteerStatus(true);
+
+      watchId = navigator.geolocation.watchPosition(
+        sendLocationUpdate,
+        (err) => {
+          alert("Failed to get your location. Please allow GPS.");
+          console.error(err);
+          document.getElementById("status").innerText = `Geolocation error: ${err.message}`;
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 27000 // Must be less than updateInterval
+        }
+      );
+      document.getElementById("status").innerText = "Started continuous location updates...";
+    }
+
+    function stopLocationUpdates() {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+        updateVolunteerStatus(false); // Set availability to false
+        document.getElementById("status").innerText = "Location updates stopped.";
+      } else {
+        document.getElementById("status").innerText = "No active location updates to stop.";
+      }
+    }
+
+    // Handle availability status change
+    document.getElementById("availabilityStatus").addEventListener('change', async (event) => {
+        const isAvailable = event.target.value === 'true';
+        await updateVolunteerStatus(isAvailable);
+        document.getElementById("status").innerText = `Availability set to: ${isAvailable ? 'Available' : 'Unavailable'}`;
+    });
+
+  </script>
+</body>
+</html>
