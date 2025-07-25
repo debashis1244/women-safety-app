@@ -21,6 +21,7 @@
             --shadow-medium: rgba(0, 0, 0, 0.2);
             --corner-element-color: rgba(100, 150, 200, 0.2); /* Subtle blue for corners */
             --corner-element-glow: rgba(100, 150, 255, 0.4);
+            --slogan-bg-color: rgba(255, 255, 255, 0.7); /* Background for slogan box */
         }
 
         body {
@@ -36,7 +37,7 @@
             justify-content: center;
             align-items: center;
             overflow: hidden; /* Hide potential scrollbar from subtle animations */
-            position: relative; /* Needed for absolute positioning of corners */
+            position: relative; /* Needed for positioning the scrolling slogan and corners */
         }
 
         .container {
@@ -49,7 +50,7 @@
             animation: fadeIn 1s ease-out;
             box-sizing: border-box;
             position: relative; /* For z-index to work against fixed elements */
-            z-index: 1; /* Ensure container is above corner elements */
+            z-index: 1; /* Ensure container is above corner elements and slogan */
         }
 
         @keyframes fadeIn {
@@ -59,10 +60,10 @@
 
         /* Logo Styling */
         .logo {
-            width: 140px; /* Made bigger */
+            width: 140px;
             height: auto;
             margin-bottom: 20px;
-            animation: logoPulse 2s infinite ease-in-out; /* Pulsing animation */
+            animation: logoPulse 2s infinite ease-in-out;
         }
 
         @keyframes logoPulse {
@@ -144,9 +145,9 @@
 
         /* --- Innovative Corner Elements Styling --- */
         .corner-element {
-            position: fixed;
-            width: 80px; /* Base size */
-            height: 80px; /* Base size */
+            position: fixed; /* Fixed relative to viewport */
+            width: 80px;
+            height: 80px;
             z-index: 0; /* Behind the main container */
             opacity: 0.6;
         }
@@ -155,7 +156,7 @@
         .corner-tl {
             top: 20px;
             left: 20px;
-            transform: rotate(45deg); /* Angle for a dynamic look */
+            transform: rotate(45deg);
             animation: rotateFade 8s infinite linear;
         }
         .corner-tl::before, .corner-tl::after {
@@ -187,8 +188,8 @@
         .corner-tr {
             top: 20px;
             right: 20px;
-            font-size: 3em; /* Icon size */
-            color: var(--accent-red); /* Using accent color for pin */
+            font-size: 3em;
+            color: var(--accent-red);
             animation: pulseLocation 2.5s infinite ease-in-out;
         }
         @keyframes pulseLocation {
@@ -201,7 +202,7 @@
             bottom: 20px;
             left: 20px;
             width: 70px; height: 70px;
-            position: relative;
+            position: relative; /* For nested nodes */
             transform: rotate(-30deg);
             animation: fadeInOutNodes 5s infinite ease-in-out;
         }
@@ -216,7 +217,7 @@
         .corner-bl .node:nth-child(2) { top: 0; right: 0; }
         .corner-bl .node:nth-child(3) { bottom: 0; left: 0; }
         .corner-bl .node:nth-child(4) { bottom: 0; right: 0; }
-        .corner-bl .line {
+        .corner-bl .line { /* Lines connecting nodes, adjust as needed */
             position: absolute;
             background-color: var(--corner-element-color);
             height: 2px;
@@ -234,7 +235,7 @@
         .corner-br {
             bottom: 20px;
             right: 20px;
-            font-size: 3.5em; /* Icon size */
+            font-size: 3.5em;
             color: var(--corner-element-color);
             animation: shieldPulse 3s infinite ease-in-out;
         }
@@ -243,19 +244,72 @@
             50% { transform: scale(1.08); opacity: 0.9; text-shadow: 0 0 10px var(--corner-element-glow); }
         }
 
-        /* Responsive adjustments for corner elements */
+        /* --- Slogan Scroll Styling --- */
+        .scrolling-slogan-container {
+            position: fixed; /* Fixed relative to viewport */
+            bottom: 30px; /* Position above bottom corners */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            height: 30px; /* Height of one visible slogan line */
+            overflow: hidden;
+            color: var(--text-dark);
+            font-size: 0.95em;
+            font-weight: 600;
+            opacity: 0.9;
+            background-color: var(--slogan-bg-color);
+            border-radius: 20px;
+            padding: 5px 15px;
+            box-shadow: 0 2px 10px var(--shadow-light);
+            display: flex; /* For centering content within */
+            align-items: center;
+            justify-content: center;
+            z-index: 1; /* Ensure it's above corner elements */
+        }
+
+        .slogan-line {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            opacity: 0; /* Start invisible */
+            animation: slogan-scroll 16s infinite ease-in-out; /* 4 lines * 4s/line = 16s cycle */
+        }
+
+        /* Define delays for each slogan line to appear sequentially */
+        .slogan-line:nth-child(1) { animation-delay: 0s; }
+        .slogan-line:nth-child(2) { animation-delay: 4s; }
+        .slogan-line:nth-child(3) { animation-delay: 8s; }
+        .slogan-line:nth-child(4) { animation-delay: 12s; }
+
+
+        @keyframes slogan-scroll {
+            0% { transform: translateY(100%); opacity: 0; } /* Start below and invisible */
+            5% { transform: translateY(0); opacity: 1; }   /* Slide up and fade in */
+            20% { transform: translateY(0); opacity: 1; }  /* Hold visible */
+            25% { transform: translateY(-100%); opacity: 0; } /* Slide up and fade out */
+            100% { transform: translateY(-100%); opacity: 0; } /* Stay invisible until next cycle */
+        }
+
+        /* Responsive adjustments for corner elements and slogan */
         @media (max-width: 600px) {
             .corner-element {
-                width: 60px; /* Smaller on mobile */
-                height: 60px;
+                width: 50px; /* Smaller on mobile */
+                height: 50px;
             }
             .corner-tl, .corner-tr, .corner-bl, .corner-br {
-                font-size: 2em; /* Smaller icons on mobile */
+                font-size: 1.8em; /* Smaller icons on mobile */
                 top: 10px; left: 10px; bottom: 10px; right: 10px; /* Closer to corners */
             }
-            .corner-tl::before { width: 10px; height: 10px; }
-            .corner-tl::after { width: 8px; height: 8px; }
-            .corner-bl .node { width: 8px; height: 8px; }
+            .corner-tl::before { width: 8px; height: 8px; }
+            .corner-tl::after { width: 6px; height: 6px; }
+            .corner-bl .node { width: 6px; height: 6px; }
+            .scrolling-slogan-container {
+                max-width: 90%;
+                font-size: 0.8em;
+                bottom: 15px; /* Closer to bottom on mobile */
+                height: 25px;
+            }
         }
 
     </style>
@@ -274,8 +328,6 @@
 
         <div class="brand-name">KAVACHLINK</div>
         <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
-
-        <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
 
         <div class="button-group">
             <a href="sender.html" class="button">🔴 Emergency Sender</a>
@@ -298,6 +350,13 @@
 
     <div class="corner-element corner-br">
         <i class="fas fa-shield-alt"></i> </div>
+
+    <div class="scrolling-slogan-container">
+        <div class="slogan-line">Your Safety, Our Priority.</div>
+        <div class="slogan-line">Always Connected, Always Protected.</div>
+        <div class="slogan-line">Help is Just a Tap Away.</div>
+        <div class="slogan-line">Stand Fearless, We're With You.</div>
+    </div>
 
 </body>
 </html>
