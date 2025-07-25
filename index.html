@@ -51,6 +51,20 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* Logo Styling */
+        .logo {
+            width: 100px; /* Adjust size as needed */
+            height: auto; /* Maintain aspect ratio */
+            margin-bottom: 20px; /* Space below the logo */
+            animation: logoScaleIn 1s ease-out;
+        }
+
+        @keyframes logoScaleIn {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+
         .brand-name {
             font-family: 'Montserrat', sans-serif;
             font-size: 5.5vw; /* Responsive font size */
@@ -71,7 +85,7 @@
         .tagline {
             font-size: 1.2em; /* Responsive font size */
             color: var(--text-dark);
-            margin-bottom: 40px;
+            margin-bottom: 20px; /* Reduced margin to make space for theme image */
             font-weight: 400;
             opacity: 0.9;
             animation: slideIn 1.4s ease-out;
@@ -80,6 +94,21 @@
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 0.9; transform: translateY(0); }
+        }
+
+        /* New: Thematic Image Styling */
+        .theme-image {
+            max-width: 80%; /* Adjust size relative to container */
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 30px; /* Space between image and buttons */
+            box-shadow: 0 5px 15px var(--shadow-medium);
+            animation: imageFadeIn 1.6s ease-out;
+        }
+
+        @keyframes imageFadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .button-group {
@@ -136,8 +165,12 @@
 </head>
 <body>
     <div class="container">
+        <img src="logo.png" alt="KavachLink Logo" class="logo">
+
         <div class="brand-name">KAVACHLINK</div>
         <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
+
+        <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
 
         <div class="button-group">
             <a href="sender.html" class="button">🔴 Emergency Sender</a>
