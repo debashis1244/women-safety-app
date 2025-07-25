@@ -7,6 +7,7 @@
     <link rel="icon" href="favicon.ico" />
 
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <style>
         :root {
@@ -18,6 +19,8 @@
             --text-light: #ecf0f1;     /* Light grey for contrast */
             --shadow-light: rgba(0, 0, 0, 0.1);
             --shadow-medium: rgba(0, 0, 0, 0.2);
+            --corner-element-color: rgba(100, 150, 200, 0.2); /* Subtle blue for corners */
+            --corner-element-glow: rgba(100, 150, 255, 0.4);
         }
 
         body {
@@ -32,7 +35,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            overflow: hidden;
+            overflow: hidden; /* Hide potential scrollbar from subtle animations */
+            position: relative; /* Needed for absolute positioning of corners */
         }
 
         .container {
@@ -44,6 +48,8 @@
             width: 90%;
             animation: fadeIn 1s ease-out;
             box-sizing: border-box;
+            position: relative; /* For z-index to work against fixed elements */
+            z-index: 1; /* Ensure container is above corner elements */
         }
 
         @keyframes fadeIn {
@@ -51,28 +57,19 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Logo Styling - UPDATED */
+        /* Logo Styling */
         .logo {
-            width: 140px; /* Made bigger (from 100px) */
+            width: 140px; /* Made bigger */
             height: auto;
             margin-bottom: 20px;
-            animation: logoPulse 2s infinite ease-in-out; /* Added new animation */
+            animation: logoPulse 2s infinite ease-in-out; /* Pulsing animation */
         }
 
-        /* New Logo Pulse Animation */
         @keyframes logoPulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); } /* Slightly larger */
+            50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-
-        /* Original logoScaleIn, still used for initial appearance if you want */
-        /* You can remove if logoPulse is enough for initial as well */
-        /* @keyframes logoScaleIn {
-            from { transform: scale(0.6); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        } */
-
 
         .brand-name {
             font-family: 'Montserrat', sans-serif;
@@ -145,22 +142,122 @@
             box-shadow: 0 6px 20px var(--shadow-dark);
         }
 
-        /* Responsive adjustments */
-        @media (min-width: 600px) {
-            .brand-name {
-                font-size: 60px;
-            }
-            .tagline {
-                font-size: 1.3em;
-            }
-            .button-group {
-                flex-direction: row;
-                justify-content: center;
-            }
-            .button {
-                min-width: 200px;
-            }
+        /* --- Innovative Corner Elements Styling --- */
+        .corner-element {
+            position: fixed;
+            width: 80px; /* Base size */
+            height: 80px; /* Base size */
+            z-index: 0; /* Behind the main container */
+            opacity: 0.6;
         }
+
+        /* Top Left - Animated Circuitry */
+        .corner-tl {
+            top: 20px;
+            left: 20px;
+            transform: rotate(45deg); /* Angle for a dynamic look */
+            animation: rotateFade 8s infinite linear;
+        }
+        .corner-tl::before, .corner-tl::after {
+            content: '';
+            position: absolute;
+            background-color: var(--corner-element-color);
+            border-radius: 50%;
+        }
+        .corner-tl::before {
+            width: 15px; height: 15px; top: 0; left: 0;
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        .corner-tl::after {
+            width: 10px; height: 10px; bottom: 0; right: 0;
+            animation: pulseGlow 3.5s infinite ease-in-out reverse;
+        }
+        @keyframes rotateFade {
+            0% { transform: rotate(0deg) scale(0.9); opacity: 0.5; }
+            50% { transform: rotate(180deg) scale(1); opacity: 0.7; }
+            100% { transform: rotate(360deg) scale(0.9); opacity: 0.5; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 5px var(--corner-element-glow); }
+            50% { box-shadow: 0 0 15px var(--corner-element-glow); }
+        }
+
+
+        /* Top Right - Pulsating Location Pin */
+        .corner-tr {
+            top: 20px;
+            right: 20px;
+            font-size: 3em; /* Icon size */
+            color: var(--accent-red); /* Using accent color for pin */
+            animation: pulseLocation 2.5s infinite ease-in-out;
+        }
+        @keyframes pulseLocation {
+            0%, 100% { transform: scale(1); opacity: 0.8; text-shadow: 0 0 8px rgba(255, 59, 63, 0.5); }
+            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 15px rgba(255, 59, 63, 0.8); }
+        }
+
+        /* Bottom Left - Interconnected Nodes */
+        .corner-bl {
+            bottom: 20px;
+            left: 20px;
+            width: 70px; height: 70px;
+            position: relative;
+            transform: rotate(-30deg);
+            animation: fadeInOutNodes 5s infinite ease-in-out;
+        }
+        .corner-bl .node {
+            position: absolute;
+            width: 10px; height: 10px;
+            background-color: var(--corner-element-color);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--corner-element-glow);
+        }
+        .corner-bl .node:nth-child(1) { top: 0; left: 0; }
+        .corner-bl .node:nth-child(2) { top: 0; right: 0; }
+        .corner-bl .node:nth-child(3) { bottom: 0; left: 0; }
+        .corner-bl .node:nth-child(4) { bottom: 0; right: 0; }
+        .corner-bl .line {
+            position: absolute;
+            background-color: var(--corner-element-color);
+            height: 2px;
+            transform-origin: center center;
+        }
+        .corner-bl .line:nth-child(5) { top: 5px; left: 10px; width: 50px; transform: rotate(0deg); }
+        .corner-bl .line:nth-child(6) { top: 10px; left: 5px; width: 60px; transform: rotate(90deg); } /* Diagonal */
+        @keyframes fadeInOutNodes {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+
+
+        /* Bottom Right - Gentle Shield Outline */
+        .corner-br {
+            bottom: 20px;
+            right: 20px;
+            font-size: 3.5em; /* Icon size */
+            color: var(--corner-element-color);
+            animation: shieldPulse 3s infinite ease-in-out;
+        }
+        @keyframes shieldPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; text-shadow: none; }
+            50% { transform: scale(1.08); opacity: 0.9; text-shadow: 0 0 10px var(--corner-element-glow); }
+        }
+
+        /* Responsive adjustments for corner elements */
+        @media (max-width: 600px) {
+            .corner-element {
+                width: 60px; /* Smaller on mobile */
+                height: 60px;
+            }
+            .corner-tl, .corner-tr, .corner-bl, .corner-br {
+                font-size: 2em; /* Smaller icons on mobile */
+                top: 10px; left: 10px; bottom: 10px; right: 10px; /* Closer to corners */
+            }
+            .corner-tl::before { width: 10px; height: 10px; }
+            .corner-tl::after { width: 8px; height: 8px; }
+            .corner-bl .node { width: 8px; height: 8px; }
+        }
+
     </style>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -178,11 +275,29 @@
         <div class="brand-name">KAVACHLINK</div>
         <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
 
+        <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
+
         <div class="button-group">
             <a href="sender.html" class="button">🔴 Emergency Sender</a>
             <a href="viewer.html" class="button">👁️ Live Viewer</a>
             <a href="volunteer.html" class="button">🆘 Volunteer Portal</a>
         </div>
     </div>
+
+    <div class="corner-element corner-tl"></div> <div class="corner-element corner-tr">
+        <i class="fas fa-map-marker-alt"></i> </div>
+
+    <div class="corner-element corner-bl">
+        <div class="node"></div>
+        <div class="node"></div>
+        <div class="node"></div>
+        <div class="node"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+
+    <div class="corner-element corner-br">
+        <i class="fas fa-shield-alt"></i> </div>
+
 </body>
 </html>
