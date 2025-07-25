@@ -1,54 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Women's Safety App</title>
-  <link rel="icon" href="favicon.ico" />
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(to right, #ffe0e0, #fff3f3);
-      color: #333;
-      text-align: center;
-      padding-top: 80px;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KAVACHLINK - Your Safety Companion</title>
+    <link rel="icon" href="favicon.ico" />
 
-    h1 {
-      font-size: 36px;
-      margin-bottom: 30px;
-    }
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-    a {
-      display: inline-block;
-      margin: 12px;
-      padding: 14px 30px;
-      background-color: #ff3b3f;
-      color: white;
-      text-decoration: none;
-      font-size: 18px;
-      border-radius: 30px;
-      transition: background-color 0.3s ease;
-    }
+    <style>
+        :root {
+            --primary-light: #f7e9e9; /* Very light pink/blush */
+            --primary-dark: #ffdada;  /* Slightly darker pink */
+            --accent-red: #ff3b3f;     /* Original alert red */
+            --accent-red-hover: #e32b2f; /* Darker red on hover */
+            --text-dark: #2c3e50;      /* Dark blue-grey for main text */
+            --text-light: #ecf0f1;     /* Light grey for contrast */
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+        }
 
-    a:hover {
-      background-color: #e32b2f;
-    }
-  </style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            color: var(--text-dark);
+            text-align: center;
+            padding: 0; /* Remove default padding */
+            margin: 0;  /* Remove default margin */
+            min-height: 100vh; /* Ensure full viewport height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Center content vertically */
+            align-items: center; /* Center content horizontally */
+            overflow: hidden; /* Hide potential scrollbar from subtle animations */
+        }
 
-  <!-- Supabase JS CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-    // You can use supabase client here if needed
-  </script>
+        .container {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white container */
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            max-width: 500px;
+            width: 90%;
+            animation: fadeIn 1s ease-out;
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 5.5vw; /* Responsive font size */
+            font-weight: 800;
+            color: var(--accent-red); /* Use the alert color for impact */
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px var(--shadow-light);
+            animation: scaleIn 1.2s ease-out;
+            line-height: 1; /* Adjust line height for big text */
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .tagline {
+            font-size: 1.2em; /* Responsive font size */
+            color: var(--text-dark);
+            margin-bottom: 40px;
+            font-weight: 400;
+            opacity: 0.9;
+            animation: slideIn 1.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column; /* Stack buttons vertically on small screens */
+            gap: 15px; /* Space between buttons */
+            margin-top: 20px;
+        }
+
+        .button {
+            display: block; /* Make buttons take full width of container */
+            padding: 16px 35px;
+            background-color: var(--accent-red);
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1em;
+            border-radius: 50px; /* More rounded, modern look */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+        }
+
+        .button:hover {
+            background-color: var(--accent-red-hover);
+            transform: translateY(-3px); /* Subtle lift effect */
+            box-shadow: 0 6px 20px var(--shadow-dark);
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 600px) {
+            .brand-name {
+                font-size: 60px; /* Fixed size on larger screens */
+            }
+            .tagline {
+                font-size: 1.3em;
+            }
+            .button-group {
+                flex-direction: row; /* Buttons side-by-side on larger screens */
+                justify-content: center;
+            }
+            .button {
+                min-width: 200px; /* Ensure buttons are not too small */
+            }
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // You can use supabase client here if needed
+    </script>
 </head>
 <body>
-  <h1>🚨 Women's Safety App</h1>
-  <a href="sender.html">🔴 Emergency Sender</a>
-  <a href="viewer.html">👁️ Live Viewer</a>
-  <a href="volunteer.html" class="button">🆘 Volunteer Portal</a>
+    <div class="container">
+        <div class="brand-name">KAVACHLINK</div>
+        <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
+
+        <div class="button-group">
+            <a href="sender.html" class="button">🔴 Emergency Sender</a>
+            <a href="viewer.html" class="button">👁️ Live Viewer</a>
+            <a href="volunteer.html" class="button">🆘 Volunteer Portal</a>
+        </div>
+    </div>
 </body>
 </html>
