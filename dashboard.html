@@ -1,95 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KavachLink Dashboard</title>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .logo {
-            display: block;
-            max-width: 180px;
-            height: auto;
-            margin: 20px auto;
-        }
-
-        .theme-image {
-            display: block;
-            max-width: 400px;
-            height: auto;
-            margin: 20px auto;
-            border-radius: 10px;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        p {
-            color: #555;
-            font-size: 1.1em;
-        }
-
-        .logout-btn {
-            background-color: #d9534f;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-
-        .logout-btn:hover {
-            background-color: #c9302c;
-        }
-
-        @media (max-width: 500px) {
-            .theme-image {
-                max-width: 90%;
-            }
-        }
-    </style>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
-        // Redirect if not logged in
-        if (!localStorage.getItem("loggedInUser")) {
-            window.location.href = "login.html";
+        const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Check if the user is signed in
+        const user = supabase.auth.getSession();
+        if (!user) {
+            window.location.href = 'index.html'; // Redirect to sign-in page
         }
 
-        function logout() {
-            localStorage.removeItem("loggedInUser");
-            window.location.href = "login.html";
+        async function signOut() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html'; // Redirect after sign out
         }
     </script>
 </head>
 <body>
-
     <div class="container">
-        <img src="logo kavachlink.PNG" alt="KavachLink Logo" class="logo">
-        <h1>Welcome to KavachLink Dashboard</h1>
-        <p>Protecting your safety with the Rakshabandhan spirit.</p>
-
-<!--         <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
- -->
-        <br>
-        <button class="logout-btn" onclick="logout()">Logout</button>
+        <div class="brand-name">KAVACHLINK</div>
+        <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
+        <img src="logo_kavachlink.PNG" alt="KavachLink Logo" class="logo">
+        <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
+        <div class="button-group">
+            <a href="sender.html" class="button">🔴 Emergency Sender</a>
+            <a href="viewer.html" class="button">👁️ Live Viewer</a>
+            <a href="volunteer.html" class="button">🆘 Volunteer Portal</a>
+            <button onclick="signOut()" class="button">Sign Out</button>
+        </div>
     </div>
-
 </body>
 </html>
