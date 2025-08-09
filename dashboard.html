@@ -46,12 +46,11 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        /* Logo Styling */
         .logo {
             width: 140px;
             height: auto;
             margin-bottom: 20px;
-            max-width: 100%; /* FIX: Added this line */
+            max-width: 100%;
             animation: logoPulse 2s infinite ease-in-out;
         }
         @keyframes logoPulse {
@@ -116,6 +115,7 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 600;
             box-shadow: 0 4px 15px var(--shadow-medium);
+            width: 100%;
         }
         .button:hover {
             background-color: var(--accent-red-hover);
@@ -251,7 +251,6 @@
             25% { transform: translateY(-100%); opacity: 0; }
             100% { transform: translateY(-100%); opacity: 0; }
         }
-        /* Responsive adjustments */
         @media (min-width: 600px) {
             .brand-name {
                 font-size: 60px;
@@ -262,6 +261,7 @@
             .button-group {
                 flex-direction: row;
                 justify-content: center;
+                gap: 20px;
             }
             .button {
                 min-width: 200px;
@@ -286,6 +286,22 @@
                 height: 25px;
             }
         }
+        .sign-out-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f4f4f4;
+            color: var(--text-dark);
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .sign-out-btn:hover {
+            background-color: #e9e9e9;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
@@ -303,6 +319,9 @@
     </script>
 </head>
 <body>
+    <div class="sign-out-btn-container">
+        <button onclick="signOut()" class="sign-out-btn">Sign Out</button>
+    </div>
     <div class="container">
         <img src="logo kavachlink.PNG" alt="KavachLink Logo" class="logo">
         <div class="brand-name">KAVACHLINK</div>
@@ -312,7 +331,6 @@
             <a href="sender.html" class="button">🔴 Emergency Sender</a>
             <a href="viewer.html" class="button">👁️ Live Viewer</a>
             <a href="volunteer.html" class="button">🆘 Volunteer Portal</a>
-            <button onclick="signOut()" class="button">Sign Out</button>
         </div>
     </div>
     <div class="corner-element corner-tl"></div>
