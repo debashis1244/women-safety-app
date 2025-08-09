@@ -325,16 +325,16 @@
         const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // This listener checks for user session and redirects if there is no session
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (!session) {
-                window.location.href = 'index.html';
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (!session) {
+                    window.location.href = 'index.html';
+                }
+            });
         });
-
         async function signOut() {
             await supabase.auth.signOut();
+            window.location.href = 'index.html';
         }
     </script>
 </head>
