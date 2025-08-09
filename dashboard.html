@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Check if the user is signed in
+        const user = supabase.auth.getSession();
+        if (!user) {
+            window.location.href = 'index.html'; // Redirect to sign-in page
+        }
+
+        async function signOut() {
+            await supabase.auth.signOut();
+            window.location.href = 'index.html'; // Redirect after sign out
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="brand-name">KAVACHLINK</div>
+        <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
+        <img src="logo kavachlink.PNG" alt="KavachLink Logo" class="logo">
+        <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
+        <div class="button-group">
+            <a href="sender.html" class="button">🔴 Emergency Sender</a>
+            <a href="viewer.html" class="button">👁️ Live Viewer</a>
+            <a href="volunteer.html" class="button">🆘 Volunteer Portal</a>
+            <button onclick="signOut()" class="button">Sign Out</button>
+        </div>
+    </div>
+</body>
+</html>
