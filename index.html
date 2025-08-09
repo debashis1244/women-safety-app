@@ -7,6 +7,83 @@
     <link rel="icon" href="favicon.ico" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #f7e9e9;
+            --primary-dark: #ffdada;
+            --accent-red: #ff3b3f;
+            --accent-red-hover: #e32b2f;
+            --text-dark: #2c3e50;
+            --text-light: #ecf0f1;
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .auth-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            max-width: 400px;
+            width: 90%;
+        }
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2em;
+            font-weight: 800;
+            color: var(--accent-red);
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .tagline {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #7f8c8d;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        .auth-button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--accent-red);
+            color: white;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .auth-button:hover {
+            background-color: var(--accent-red-hover);
+        }
+        .toggle-text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .toggle-text a {
+            color: var(--accent-red);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
