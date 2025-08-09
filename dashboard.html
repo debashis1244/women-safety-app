@@ -5,23 +5,18 @@
     <script>
         const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        async function checkAuth() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = 'index.html'; // Redirect if not signed in
-            }
+        // Check if the user is signed in
+        const user = supabase.auth.getSession();
+        if (!user) {
+            window.location.href = 'index.html'; // Redirect to sign-in page
         }
 
         async function signOut() {
-            await supabaseClient.auth.signOut();
-            window.location.href = 'index.html';
+            await supabase.auth.signOut();
+            window.location.href = 'index.html'; // Redirect after sign out
         }
-
-        // Run check on page load
-        document.addEventListener("DOMContentLoaded", checkAuth);
     </script>
 </head>
 <body>
