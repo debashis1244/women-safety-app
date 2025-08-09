@@ -62,8 +62,6 @@
             margin-bottom: 20px;
             max-width: 100%;
             animation: logoPulse 2s infinite ease-in-out;
-            border-radius: 10px; /* Added for a subtle rounded look */
-            box-shadow: 0 5px 15px var(--shadow-medium); /* Added a shadow to the logo */
         }
         @keyframes logoPulse {
             0% { transform: scale(1); }
@@ -72,7 +70,6 @@
         }
         .brand-name {
             font-family: 'Montserrat', sans-serif;
-            /* FIX: Use clamp to prevent overflow on all screens */
             font-size: clamp(30px, 5.5vw, 60px); 
             font-weight: 800;
             color: var(--accent-red);
@@ -81,8 +78,7 @@
             text-shadow: 2px 2px 5px var(--shadow-light);
             animation: scaleIn 1.2s ease-out;
             line-height: 1;
-            /* FIX: Added word-break to ensure the name doesn't overflow */
-            word-break: break-word;
+            word-wrap: break-word;
         }
         @keyframes scaleIn {
             from { opacity: 0; transform: scale(0.8); }
@@ -129,10 +125,7 @@
             transition: background-color 0.3s ease, transform 0.2s ease;
             font-weight: 600;
             box-shadow: 0 4px 15px var(--shadow-medium);
-            /* FIX: Set a consistent width for buttons */
             width: 100%;
-            max-width: 300px;
-            margin: 0 auto;
         }
         .button:hover {
             background-color: var(--accent-red-hover);
@@ -328,14 +321,13 @@
         const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        // FIX: Replaced the direct getSession call with onAuthStateChange listener
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (!session) {
-                window.location.href = 'index.html';
-            }
-        });
+        const user = supabase.auth.getSession();
+        if (!user) {
+            window.location.href = 'index.html';
+        }
         async function signOut() {
             await supabase.auth.signOut();
+            window.location.href = 'index.html';
         }
     </script>
 </head>
@@ -349,7 +341,7 @@
         </div>
         <div class="brand-name">KAVACHLINK</div>
         <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
-<!--         <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image" onerror="this.style.display='none'">
+<!--         <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
         <div class="button-group"> -->
             <a href="sender.html" class="button">🔴 Emergency Sender</a>
             <a href="viewer.html" class="button">👁️ Live Viewer</a>
