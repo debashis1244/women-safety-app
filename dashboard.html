@@ -1,36 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KAVACHLINK - Your Safety Companion</title>
+    <link rel="icon" href="favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-light: #f7e9e9;
+            --primary-dark: #ffdada;
+            --accent-red: #ff3b3f;
+            --accent-red-hover: #e32b2f;
+            --text-dark: #2c3e50;
+            --text-light: #ecf0f1;
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            max-width: 500px;
+            width: 90%;
+            animation: fadeIn 1s ease-out;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Logo Styling */
+        .logo {
+            width: 140px;
+            height: auto;
+            margin-bottom: 20px;
+            max-width: 100%; /* FIX: Added this line */
+            animation: logoPulse 2s infinite ease-in-out;
+        }
+        @keyframes logoPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(30px, 5.5vw, 60px); 
+            font-weight: 800;
+            color: var(--accent-red);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 5px var(--shadow-light);
+            animation: scaleIn 1.2s ease-out;
+            line-height: 1;
+            word-wrap: break-word;
+        }
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .tagline {
+            font-size: 1.2em;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            font-weight: 400;
+            opacity: 0.9;
+            animation: slideIn 1.4s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+        .theme-image {
+            max-width: 80%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px var(--shadow-medium);
+            animation: imageFadeIn 1.6s ease-out;
+        }
+        @keyframes imageFadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .button {
+            display: block;
+            padding: 16px 35px;
+            background-color: var(--accent-red);
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 1.1em;
+            border-radius: 50px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px var(--shadow-medium);
+        }
+        .button:hover {
+            background-color: var(--accent-red-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow-dark);
+        }
+        .corner-element {
+            position: fixed;
+            width: 80px;
+            height: 80px;
+            z-index: 0;
+            opacity: 0.6;
+        }
+        .corner-tl {
+            top: 20px;
+            left: 20px;
+            transform: rotate(45deg);
+            animation: rotateFade 8s infinite linear;
+        }
+        .corner-tl::before, .corner-tl::after {
+            content: '';
+            position: absolute;
+            background-color: var(--corner-element-color);
+            border-radius: 50%;
+        }
+        .corner-tl::before {
+            width: 15px; height: 15px; top: 0; left: 0;
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+        .corner-tl::after {
+            width: 10px; height: 10px; bottom: 0; right: 0;
+            animation: pulseGlow 3.5s infinite ease-in-out reverse;
+        }
+        @keyframes rotateFade {
+            0% { transform: rotate(0deg) scale(0.9); opacity: 0.5; }
+            50% { transform: rotate(180deg) scale(1); opacity: 0.7; }
+            100% { transform: rotate(360deg) scale(0.9); opacity: 0.5; }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 5px var(--corner-element-glow); }
+            50% { box-shadow: 0 0 15px var(--corner-element-glow); }
+        }
+        .corner-tr {
+            top: 20px;
+            right: 20px;
+            font-size: 3em;
+            color: var(--accent-red);
+            animation: pulseLocation 2.5s infinite ease-in-out;
+        }
+        @keyframes pulseLocation {
+            0%, 100% { transform: scale(1); opacity: 0.8; text-shadow: 0 0 8px rgba(255, 59, 63, 0.5); }
+            50% { transform: scale(1.1); opacity: 1; text-shadow: 0 0 15px rgba(255, 59, 63, 0.8); }
+        }
+        .corner-bl {
+            bottom: 20px;
+            left: 20px;
+            width: 70px; height: 70px;
+            position: relative;
+            transform: rotate(-30deg);
+            animation: fadeInOutNodes 5s infinite ease-in-out;
+        }
+        .corner-bl .node {
+            position: absolute;
+            width: 10px; height: 10px;
+            background-color: var(--corner-element-color);
+            border-radius: 50%;
+            box-shadow: 0 0 5px var(--corner-element-glow);
+        }
+        .corner-bl .node:nth-child(1) { top: 0; left: 0; }
+        .corner-bl .node:nth-child(2) { top: 0; right: 0; }
+        .corner-bl .node:nth-child(3) { bottom: 0; left: 0; }
+        .corner-bl .node:nth-child(4) { bottom: 0; right: 0; }
+        .corner-bl .line {
+            position: absolute;
+            background-color: var(--corner-element-color);
+            height: 2px;
+            transform-origin: center center;
+        }
+        .corner-bl .line:nth-child(5) { top: 5px; left: 10px; width: 50px; transform: rotate(0deg); }
+        .corner-bl .line:nth-child(6) { top: 10px; left: 5px; width: 60px; transform: rotate(90deg); }
+        @keyframes fadeInOutNodes {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .corner-br {
+            bottom: 20px;
+            right: 20px;
+            font-size: 3.5em;
+            color: var(--corner-element-color);
+            animation: shieldPulse 3s infinite ease-in-out;
+        }
+        @keyframes shieldPulse {
+            0%, 100% { transform: scale(1); opacity: 0.6; text-shadow: none; }
+            50% { transform: scale(1.08); opacity: 0.9; text-shadow: 0 0 10px var(--corner-element-glow); }
+        }
+        .scrolling-slogan-container {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            height: 30px;
+            overflow: hidden;
+            color: var(--text-dark);
+            font-size: 0.95em;
+            font-weight: 600;
+            opacity: 0.9;
+            background-color: var(--slogan-bg-color);
+            border-radius: 20px;
+            padding: 5px 15px;
+            box-shadow: 0 2px 10px var(--shadow-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        .slogan-line {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            opacity: 0;
+            animation: slogan-scroll 16s infinite ease-in-out;
+        }
+        .slogan-line:nth-child(1) { animation-delay: 0s; }
+        .slogan-line:nth-child(2) { animation-delay: 4s; }
+        .slogan-line:nth-child(3) { animation-delay: 8s; }
+        .slogan-line:nth-child(4) { animation-delay: 12s; }
+        @keyframes slogan-scroll {
+            0% { transform: translateY(100%); opacity: 0; }
+            5% { transform: translateY(0); opacity: 1; }
+            20% { transform: translateY(0); opacity: 1; }
+            25% { transform: translateY(-100%); opacity: 0; }
+            100% { transform: translateY(-100%); opacity: 0; }
+        }
+        /* Responsive adjustments */
+        @media (min-width: 600px) {
+            .brand-name {
+                font-size: 60px;
+            }
+            .tagline {
+                font-size: 1.3em;
+            }
+            .button-group {
+                flex-direction: row;
+                justify-content: center;
+            }
+            .button {
+                min-width: 200px;
+            }
+        }
+        @media (max-width: 600px) {
+            .corner-element {
+                width: 50px;
+                height: 50px;
+            }
+            .corner-tl, .corner-tr, .corner-bl, .corner-br {
+                font-size: 1.8em;
+                top: 10px; left: 10px; bottom: 10px; right: 10px;
+            }
+            .corner-tl::before { width: 8px; height: 8px; }
+            .corner-tl::after { width: 6px; height: 6px; }
+            .corner-bl .node { width: 6px; height: 6px; }
+            .scrolling-slogan-container {
+                max-width: 90%;
+                font-size: 0.8em;
+                bottom: 15px;
+                height: 25px;
+            }
+        }
+    </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
         const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        // Check if the user is signed in
         const user = supabase.auth.getSession();
         if (!user) {
-            window.location.href = 'index.html'; // Redirect to sign-in page
+            window.location.href = 'index.html';
         }
-
         async function signOut() {
             await supabase.auth.signOut();
-            window.location.href = 'index.html'; // Redirect after sign out
+            window.location.href = 'index.html';
         }
     </script>
 </head>
 <body>
     <div class="container">
+        <img src="logo_kavachlink.PNG" alt="KavachLink Logo" class="logo">
         <div class="brand-name">KAVACHLINK</div>
         <p class="tagline">Your Instant Safety Companion. Help is Just a Tap Away.</p>
-        <img src="logo kavachlink.PNG" alt="KavachLink Logo" class="logo">
-<!--         <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
-        <div class="button-group"> -->
+        <img src="rakhi-safety-theme.png" alt="Rakshabandhan Safety Theme" class="theme-image">
+        <div class="button-group">
             <a href="sender.html" class="button">🔴 Emergency Sender</a>
             <a href="viewer.html" class="button">👁️ Live Viewer</a>
             <a href="volunteer.html" class="button">🆘 Volunteer Portal</a>
             <button onclick="signOut()" class="button">Sign Out</button>
         </div>
+    </div>
+    <div class="corner-element corner-tl"></div>
+    <div class="corner-element corner-tr">
+        <i class="fas fa-map-marker-alt"></i>
+    </div>
+    <div class="corner-element corner-bl">
+        <div class="node"></div>
+        <div class="node"></div>
+        <div class="node"></div>
+        <div class="node"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <div class="corner-element corner-br">
+        <i class="fas fa-shield-alt"></i>
+    </div>
+    <div class="scrolling-slogan-container">
+        <div class="slogan-line">Your Safety, Our Priority.</div>
+        <div class="slogan-line">Always Connected, Always Protected.</div>
+        <div class="slogan-line">Help is Just a Tap Away.</div>
+        <div class="slogan-line">Stand Fearless, We're With You.</div>
     </div>
 </body>
 </html>
