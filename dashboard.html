@@ -62,6 +62,8 @@
             margin-bottom: 20px;
             max-width: 100%;
             animation: logoPulse 2s infinite ease-in-out;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow-medium);
         }
         @keyframes logoPulse {
             0% { transform: scale(1); }
@@ -126,6 +128,8 @@
             font-weight: 600;
             box-shadow: 0 4px 15px var(--shadow-medium);
             width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
         }
         .button:hover {
             background-color: var(--accent-red-hover);
@@ -321,13 +325,16 @@
         const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const user = supabase.auth.getSession();
-        if (!user) {
-            window.location.href = 'index.html';
-        }
+
+        // This listener checks for user session and redirects if there is no session
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (!session) {
+                window.location.href = 'index.html';
+            }
+        });
+
         async function signOut() {
             await supabase.auth.signOut();
-            window.location.href = 'index.html';
         }
     </script>
 </head>
