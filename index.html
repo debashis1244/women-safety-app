@@ -84,14 +84,11 @@
             font-weight: 600;
         }
     </style>
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
         const SUPABASE_URL = "https://fzxqhiopqazcbnqndmfl.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6eHFoaW9wcWF6Y2JucW5kbWZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwOTk3OTAsImV4cCI6MjA2NDY3NTc5MH0.ACYOc5CRr3lwE82f7fY25sm66JuceDoAIoWLN_pVRoU";
-
-        // Avoid name conflict by using a different variable name
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function handleAuth() {
             const email = document.getElementById('email').value;
@@ -99,18 +96,18 @@
             const isSigningUp = document.getElementById('auth-action').innerText === 'Sign Up';
 
             if (isSigningUp) {
-                const { error } = await client.auth.signUp({ email, password });
+                const { user, error } = await supabase.auth.signUp({ email, password });
                 if (error) {
                     alert('Sign up error: ' + error.message);
                 } else {
                     alert('Check your email to confirm your account!');
                 }
             } else {
-                const { error } = await client.auth.signInWithPassword({ email, password });
+                const { user, error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) {
                     alert('Sign in error: ' + error.message);
                 } else {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'dashboard.html'; // Redirect to the authenticated page
                 }
             }
         }
@@ -127,7 +124,8 @@
             }
         }
 
-        client.auth.onAuthStateChange((event, session) => {
+        // Redirect if a user is already signed in
+        supabase.auth.onAuthStateChange((event, session) => {
             if (session) {
                 window.location.href = 'dashboard.html';
             }
